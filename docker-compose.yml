@@ -1,7 +1,28 @@
-app:
-  build: .
-  ports:
-    - "8080:8080"
-  volumes:
-    - ".:/go/src/app"
-  command: go run main.go
+version: '3'
+
+services:
+  mysql:
+    container_name: mysql
+    build:
+      context: .
+      dockerfile: ./mysql/Dockerfile
+    hostname: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_USER: user
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: database
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --skip-character-set-client-handshake
+    volumes:
+      - "db-data:/var/lib/mysql"
+      - "./docker/mysql/my.conf:/etc/mysql/my.conf"
+      - "./docker/mysql/init/:/docker-entrypoint-initdb.d"
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    command: go run main.go
+volumes:
+  db-data:
+    driver: local
