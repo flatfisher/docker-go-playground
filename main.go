@@ -7,18 +7,10 @@ import (
 	"os"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
-	}
-	fmt.Fprintf(w, "Hello World")
-}
-
 func main() {
-	log.Print("Hello world sample started.")
+	log.Print("Starting on port 8080")
 
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", helloHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {

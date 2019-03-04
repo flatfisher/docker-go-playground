@@ -13,7 +13,7 @@ func TestHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(handler)
+	handler := http.HandlerFunc(helloHandler)
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
@@ -32,7 +32,7 @@ func TestHandlerNotFound(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(handler)
+	handler := http.HandlerFunc(helloHandler)
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusNotFound {
