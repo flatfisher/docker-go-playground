@@ -7,14 +7,6 @@ import (
 	"os"
 )
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
-	}
-	fmt.Fprintf(w, "Hello World")
-}
-
 func main() {
 	log.Print("Starting on port 8080")
 	http.HandleFunc("/", helloHandler)
