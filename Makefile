@@ -4,6 +4,9 @@ build:
 run:
 	docker run -p 8080:8080 --rm -it go.playground:0.1
 
+local-run:
+	go run ./
+
 stop:
 	docker stop go.playground:0.1
 
