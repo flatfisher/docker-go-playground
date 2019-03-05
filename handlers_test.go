@@ -8,7 +8,7 @@ import (
 )
 
 func TestHelloHandler(t *testing.T) {
-	t.Run("TestHello", func(t *testing.T) {
+	t.Run("Request", func(t *testing.T) {
 		t.Run("GET", func(t *testing.T) {
 			t.Parallel()
 			m := "GET"
