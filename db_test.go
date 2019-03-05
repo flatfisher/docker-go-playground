@@ -51,7 +51,7 @@ func TestQuery(t *testing.T) {
 	defer db.Close()
 	rows, err := db.Query("SELECT * FROM sakila.city LIMIT 1;")
 	if err != nil {
-		t.Fatal(err)
+		t.Skip("Skip as MySQL server is not start")
 	}
 
 	columns, err := rows.Columns()
@@ -70,7 +70,6 @@ func TestQuery(t *testing.T) {
 		}
 		var value string
 		for i, col := range values {
-			// Here we can check if the value is nil (NULL value)
 			if col == nil {
 				value = "NULL"
 			} else {
@@ -78,6 +77,5 @@ func TestQuery(t *testing.T) {
 			}
 			fmt.Println(columns[i], ": ", value)
 		}
-		fmt.Println("-----------------------------------")
 	}
 }
