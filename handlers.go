@@ -16,13 +16,13 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	m := ""
 	switch {
 	case r.Method == http.MethodGet:
-		m = "Get"
+		m = "GET"
 	case r.Method == http.MethodPost:
-		m = "Post"
+		m = "POST"
 	case r.Method == http.MethodPut:
-		m = "Put"
+		m = "PUT"
 	case r.Method == http.MethodDelete:
-		m = "Delete"
+		m = "DELETE"
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		fmt.Fprintf(w, "405 Method Not Allowed")
