@@ -18,7 +18,7 @@ func connect() (*sql.DB, error) {
 }
 
 func dataSourceName() string {
-	user := getParamString("MYSQL_USER", "user")
+	user := getParamString("MYSQL_USER", "root")
 	pass := getParamString("MYSQL_PASSWORD", "password")
 	protocol := getParamString("MYSQL_PROTOCOL", "tcp")
 	host := getParamString("MYSQL_DB_HOST", "localhost")
