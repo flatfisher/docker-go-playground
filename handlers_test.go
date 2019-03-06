@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -14,7 +15,7 @@ func TestHelloHandler(t *testing.T) {
 		t.Run("GET", func(t *testing.T) {
 			t.Parallel()
 			m := "GET"
-			res := request(m, t)
+			res := request(m, nil, helloHandler, t)
 			if res.Body.String() != fmt.Sprintf("You requested %s request!", m) {
 				t.Fatal(res.Body.String())
 			}
@@ -22,7 +23,7 @@ func TestHelloHandler(t *testing.T) {
 		t.Run("POST", func(t *testing.T) {
 			t.Parallel()
 			m := "POST"
-			res := request(m, t)
+			res := request(m, nil, helloHandler, t)
 			if res.Body.String() != fmt.Sprintf("You requested %s request!", m) {
 				t.Fatal(res.Body.String())
 			}
@@ -30,7 +31,7 @@ func TestHelloHandler(t *testing.T) {
 		t.Run("PUT", func(t *testing.T) {
 			t.Parallel()
 			m := "PUT"
-			res := request(m, t)
+			res := request(m, nil, helloHandler, t)
 			if res.Body.String() != fmt.Sprintf("You requested %s request!", m) {
 				t.Fatal(res.Body.String())
 			}
@@ -38,7 +39,7 @@ func TestHelloHandler(t *testing.T) {
 		t.Run("DELETE", func(t *testing.T) {
 			t.Parallel()
 			m := "DELETE"
-			res := request(m, t)
+			res := request(m, nil, helloHandler, t)
 			if res.Body.String() != fmt.Sprintf("You requested %s request!", m) {
 				t.Fatal(res.Body.String())
 			}
@@ -53,11 +54,7 @@ func TestJsonHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	req := httptest.NewRequest("POST", "/", bytes.NewBuffer(b))
-	res := httptest.NewRecorder()
-	handler := http.HandlerFunc(jsonHandler)
-	handler.ServeHTTP(res, req)
+	res := request("POST", bytes.NewBuffer(b), jsonHandler, t)
 	if res.Code != http.StatusOK {
 		t.Errorf("invalid code: %d", res.Code)
 	}
@@ -72,20 +69,20 @@ func TestJsonHandler(t *testing.T) {
 	t.Logf("%#v", resp)
 }
 
-func request(m string, t *testing.T) *httptest.ResponseRecorder {
-	req, err := http.NewRequest(m, "/", nil)
+func request(m string, b io.Reader, h func(http.ResponseWriter, *http.Request), t *testing.T) *httptest.ResponseRecorder {
+	req, err := http.NewRequest(m, "/", b)
 	if err != nil {
 		t.Fatal(err)
 	}
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(helloHandler)
-	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	res := httptest.NewRecorder()
+	handler := http.HandlerFunc(h)
+	handler.ServeHTTP(res, req)
+	if status := res.Code; status != http.StatusOK {
 		t.Errorf(
 			"unexpected status: got (%v) want (%v)",
 			status,
 			http.StatusOK,
 		)
 	}
-	return rr
+	return res
 }
