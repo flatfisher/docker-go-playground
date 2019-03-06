@@ -69,7 +69,7 @@ func TestJsonHandler(t *testing.T) {
 	t.Logf("%#v", resp)
 }
 
-func request(m string, b io.Reader, h func(http.ResponseWriter, *http.Request), t *testing.T) *httptest.ResponseRecorder {
+func request(m string, b io.Reader, h http.HandlerFunc, t *testing.T) *httptest.ResponseRecorder {
 	req, err := http.NewRequest(m, "/", b)
 	if err != nil {
 		t.Fatal(err)
