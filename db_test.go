@@ -51,7 +51,7 @@ func TestQuery(t *testing.T) {
 	defer db.Close()
 	rows, err := db.Query("SELECT * FROM sakila.city LIMIT 1;")
 	if err != nil {
-		t.Skip("Skip as MySQL server is not start")
+		t.Skip(err)
 	}
 
 	columns, err := rows.Columns()
