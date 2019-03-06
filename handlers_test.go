@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -42,6 +44,32 @@ func TestHelloHandler(t *testing.T) {
 			}
 		})
 	})
+}
+
+func TestJsonHandler(t *testing.T) {
+	// Make test body
+	n := "Test"
+	b, err := json.Marshal(JSONRequest{Name: n})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req := httptest.NewRequest("POST", "/", bytes.NewBuffer(b))
+	res := httptest.NewRecorder()
+	handler := http.HandlerFunc(jsonHandler)
+	handler.ServeHTTP(res, req)
+	if res.Code != http.StatusOK {
+		t.Errorf("invalid code: %d", res.Code)
+	}
+	resp := JSONResponse{}
+	if err := json.NewDecoder(res.Body).Decode(&resp); err != nil {
+		t.Errorf("errpr: %#v, res: %#v", err, res)
+	}
+	if resp.Message != fmt.Sprintf("Hello %s", n) {
+		t.Errorf("invalid response: %#v", resp)
+	}
+
+	t.Logf("%#v", resp)
 }
 
 func request(m string, t *testing.T) *httptest.ResponseRecorder {
