@@ -1,11 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-// TODO: 意図したHeaderやResponseが返却されるかテストコードを書く
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
@@ -29,4 +29,27 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "You requested %s request!", m)
+}
+
+// JSONRequest is request body from client
+type JSONRequest struct {
+	Name string
+}
+
+// JSONResponse is response body to ciient
+type JSONResponse struct {
+	Message string
+}
+
+func jsonHandler(w http.ResponseWriter, r *http.Request) {
+	body := JSONRequest{}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+	b, err := json.Marshal(JSONResponse{Message: "Hello " + body.Name})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprint(w, string(b))
 }
