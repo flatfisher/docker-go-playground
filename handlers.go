@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -51,5 +52,5 @@ func jsonHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprint(w, string(b))
+	io.WriteString(w, string(b)) // fmt.Fprint(w, string(b)) as same response
 }
