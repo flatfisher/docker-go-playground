@@ -16,3 +16,6 @@ $ mysql -h 127.0.0.1 -P 3306 -u root -p < sakila-data.sql
 ```
 $ go test -v
 ```
+
+## Links
+- https://globalfishingwatch.org/
